@@ -22,11 +22,12 @@ class UserController extends Controller
 
 
         if (Hash::check($password, $user->password)) {
-            return $this->success();
+            return $this->success([
+                'name' => $user->name,
+                'id' => $user->id,
+            ], trans('auth.succeed'));
         }
-        return $this->failure([
-            'password' => trans('auth.password')
-        ]);
+        return $this->failure([], trans('auth.password'));
     }
     public function register(UserRegisterRequest $request)
     {
@@ -34,9 +35,10 @@ class UserController extends Controller
         $arr = $request->validated();
         $arr['password'] = $password;
 
-        User::create($arr);
-
-
-        return $this->success();
+        $user = User::create($arr);
+        return $this->success([
+            'name' => $user->name,
+            'id' => $user->id,
+        ], trans('auth.register'));
     }
 }

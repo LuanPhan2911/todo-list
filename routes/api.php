@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TodoListController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,10 @@ use Illuminate\Support\Facades\Route;
 // });
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
+Route::group([
+    'prefix' => 'todolist',
+], function () {
+    Route::post('/create', [TodoListController::class, 'store']);
+    Route::get('/index', [TodoListController::class, 'index']);
+    Route::delete('/delete', [TodoListController::class, 'destroy']);
+});

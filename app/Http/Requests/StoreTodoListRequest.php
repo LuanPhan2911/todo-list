@@ -2,21 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class UserLoginRequest extends FormRequest
+class StoreTodoListRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-
     public function authorize()
     {
         return true;
@@ -30,16 +27,19 @@ class UserLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => [
+            'title' => [
                 'bail',
-                'required',
-                'email',
-                Rule::exists(User::class, 'email'),
+                'string',
+                'required'
             ],
-            'password' => [
+            'description' => [
                 'bail',
                 'required',
-                'min:5'
+                'string',
+            ],
+            'user_id' => [
+                'required',
+                Rule::exists('users', 'id')
             ]
         ];
     }
@@ -52,12 +52,5 @@ class UserLoginRequest extends FormRequest
             ],
             400
         ));
-    }
-
-    public function messages()
-    {
-        return [
-            'email.exists' => trans('auth.failed')
-        ];
     }
 }
