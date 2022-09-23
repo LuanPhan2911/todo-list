@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeletedTodoRequest;
 use App\Http\Requests\DeleteTodoListRequest;
 use App\Http\Requests\IndexTodoListRequest;
+use App\Http\Requests\RestoreTodoRequest;
 use App\Models\TodoList;
 use App\Http\Requests\StoreTodoListRequest;
 use App\Http\Requests\UpdateTodoListRequest;
@@ -28,6 +30,7 @@ class TodoListController extends Controller
             'title',
             'description',
             'user_id',
+            'updated_at'
         ]);
         return $this->success($data);
     }
@@ -83,9 +86,28 @@ class TodoListController extends Controller
      * @param  \App\Models\TodoList  $todoList
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTodoListRequest $request, TodoList $todoList)
+    public function update(UpdateTodoListRequest $request)
     {
-        //
+        $arr = $request->validated();
+        $todo_id = $arr['todo_id'];
+        $user_id = $arr['user_id'];
+        $title = $arr['title'];
+        $description = $arr['description'];
+        $todo = TodoList::query()
+            ->where([
+                'id' => $todo_id,
+                'user_id' => $user_id,
+            ])
+            ->first();
+        if ($todo) {
+            $todo->update([
+                'title' => $title,
+                'description' => $description,
+            ]);
+            return $this->success([], trans('todo.update_success'));
+        } else {
+            return $this->failure([], trans('todo.update_fail'));
+        }
     }
 
     /**
@@ -108,6 +130,39 @@ class TodoListController extends Controller
             return $this->success([], trans('todo.delete_success'));
         } else {
             return $this->failure([], trans('todo.delete_fail'));
+        }
+    }
+    public function getDeletedToDo(DeletedTodoRequest $request)
+    {
+        $user_id = $request->user_id;
+        $todoList = TodoList::onlyTrashed()
+            ->where([
+                'user_id' => $user_id
+            ])
+            ->get([
+                'id',
+                'title',
+                'description',
+                'deleted_at',
+            ]);
+        return $this->success($todoList);
+    }
+    public function restoreTodo(RestoreTodoRequest $request)
+    {
+        $arr = $request->validated();
+        $todo_id = $arr['todo_id'];
+        $user_id = $arr['user_id'];
+        $todo = TodoList::query()
+            ->withTrashed()
+            ->where([
+                'user_id' => $user_id,
+                'id' => $todo_id,
+            ])->first();
+        if (!empty($todo)) {
+            $todo->restore();
+            return $this->success([], trans('todo.restore_success'));
+        } else {
+            return $this->failure([], trans('todo.restore_fail'));
         }
     }
 }

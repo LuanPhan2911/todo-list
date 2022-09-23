@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\TodoListController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -27,4 +29,20 @@ Route::group([
     Route::post('/create', [TodoListController::class, 'store']);
     Route::get('/index', [TodoListController::class, 'index']);
     Route::delete('/delete', [TodoListController::class, 'destroy']);
+    Route::get('/deleted-list', [TodoListController::class, 'getDeletedTodo']);
+    Route::patch('/restore-todo', [TodoListController::class, 'restoreTodo']);
+    Route::patch('/edit', [TodoListController::class, 'update']);
+});
+Route::group([
+    'prefix' => 'post'
+], function () {
+    Route::post('/store', [PostController::class, 'store']);
+    Route::get('/', [PostController::class, 'index']);
+});
+Route::group([
+    'prefix' => 'comment'
+], function () {
+    Route::post('/store', [CommentController::class, 'store']);
+    Route::get('/', [CommentController::class, 'index']);
+    Route::post('/reply/store', [CommentController::class, 'replyStore']);
 });

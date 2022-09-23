@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateTodoListRequest extends FormRequest
+class RestoreTodoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,24 +27,14 @@ class UpdateTodoListRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => [
-                'bail',
-                'string',
-                'required'
-            ],
-            'description' => [
-                'bail',
-                'required',
-                'string',
-            ],
-            'user_id' => [
-                'required',
-                Rule::exists('users', 'id')
-            ],
             'todo_id' => [
                 'required',
                 Rule::exists('todo_lists', 'id'),
             ],
+            'user_id' => [
+                'required',
+                Rule::exists('users', 'id')
+            ]
         ];
     }
     protected function failedValidation(Validator $validator)

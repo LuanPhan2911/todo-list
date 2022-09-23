@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateTodoListRequest extends FormRequest
+class StoreReplyCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,24 +27,25 @@ class UpdateTodoListRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => [
-                'bail',
-                'string',
-                'required'
-            ],
-            'description' => [
-                'bail',
+            'message' => [
                 'required',
                 'string',
+                'bail',
             ],
             'user_id' => [
+                'bail',
                 'required',
                 Rule::exists('users', 'id')
             ],
-            'todo_id' => [
+            'post_id' => [
                 'required',
-                Rule::exists('todo_lists', 'id'),
+                'bail',
+                Rule::exists('posts', 'id')
             ],
+            'parent_id' => [
+                'required',
+                Rule::exists('comments', 'id')
+            ]
         ];
     }
     protected function failedValidation(Validator $validator)
