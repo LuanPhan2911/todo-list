@@ -12,6 +12,10 @@ class Comment extends Model
         'message',
         'user_id',
     ];
+    protected $with = [
+        'user',
+        'replies',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -20,5 +24,9 @@ class Comment extends Model
     public function replies()
     {
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+    public function commentable()
+    {
+        return $this->morphTo();
     }
 }

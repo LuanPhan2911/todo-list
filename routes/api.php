@@ -37,7 +37,9 @@ Route::group([
     'prefix' => 'post'
 ], function () {
     Route::post('/store', [PostController::class, 'store']);
+
     Route::get('/', [PostController::class, 'index']);
+    Route::get('/show', [PostController::class, 'show']);
 });
 Route::group([
     'prefix' => 'comment'

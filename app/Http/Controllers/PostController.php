@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShowPostRequest;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -17,8 +18,11 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::query()
-            ->with('comments')
-            ->get();
+            ->get([
+                'id',
+                'title',
+                'created_at',
+            ]);
         return $this->success($posts);
     }
 
@@ -52,9 +56,15 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(ShowPostRequest $request)
     {
-        //
+        $post_id = $request->post_id;
+        $post = Post::query()->where(
+            [
+                'id' => $post_id
+            ]
+        )->first();
+        return $this->success($post);
     }
 
     /**

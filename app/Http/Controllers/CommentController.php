@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexCommentRequest;
 use App\Models\Comment;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\StoreReplyCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Post;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class CommentController extends Controller
 {
@@ -16,9 +19,24 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(IndexCommentRequest $request)
     {
-        //
+        $post_id = $request->post_id;
+        $comments = Comment::query()
+            ->whereHasMorph(
+                'commentable',
+                [Post::class],
+                function (Builder $query) use ($post_id) {
+                    $query->where([
+                        'id' => $post_id,
+                    ]);
+                }
+            )
+            ->where([
+                'parent_id' => null
+            ])
+            ->get();
+        return $this->success($comments);
     }
 
     /**
