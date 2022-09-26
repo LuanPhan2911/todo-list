@@ -13,6 +13,9 @@ class Post extends Model
         'body',
         'user_id',
     ];
+    protected $with = [
+        'user'
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -20,5 +23,9 @@ class Post extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable')->whereNull('parent_id');
+    }
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
     }
 }

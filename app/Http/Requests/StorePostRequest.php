@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
@@ -40,6 +41,11 @@ class StorePostRequest extends FormRequest
                 'bail',
                 'required',
                 Rule::exists('users', 'id')
+            ],
+            'category_id' => [
+                'required',
+                'array',
+                Rule::exists(Category::class, 'id'),
             ]
 
         ];

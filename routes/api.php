@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TodoListController;
@@ -40,11 +41,16 @@ Route::group([
 
     Route::get('/', [PostController::class, 'index']);
     Route::get('/show', [PostController::class, 'show']);
+    Route::group([
+        'prefix' => 'comment'
+    ], function () {
+        Route::post('/store', [CommentController::class, 'store']);
+        Route::get('/', [CommentController::class, 'index']);
+        Route::post('/reply/store', [CommentController::class, 'replyStore']);
+    });
 });
 Route::group([
-    'prefix' => 'comment'
+    'prefix' => 'category'
 ], function () {
-    Route::post('/store', [CommentController::class, 'store']);
-    Route::get('/', [CommentController::class, 'index']);
-    Route::post('/reply/store', [CommentController::class, 'replyStore']);
+    Route::get('/', [CategoryController::class, 'index']);
 });

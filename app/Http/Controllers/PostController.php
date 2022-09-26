@@ -18,11 +18,8 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::query()
-            ->get([
-                'id',
-                'title',
-                'created_at',
-            ]);
+            ->with('categories')
+            ->get();
         return $this->success($posts);
     }
 
@@ -45,8 +42,11 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $arr = $request->validated();
+        $category_id = $request->category_id;
         $post = new Post($arr);
         $post->save();
+        $post->categories()->sync($category_id);
+
         return $this->success($post, trans('post.created_post'));
     }
 

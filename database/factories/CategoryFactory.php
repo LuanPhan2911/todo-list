@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
  */
-class PostFactory extends Factory
+class CategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,9 +17,7 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            'title' => fake()->title(),
-            'body' => fake()->text(),
-            'user_id' => User::all()->random()->id
+            'name' => fake()->name(),
         ];
     }
 }
